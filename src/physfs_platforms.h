@@ -72,6 +72,8 @@
 #elif defined(__QNX__)
 #  define PHYSFS_PLATFORM_QNX 1
 #  define PHYSFS_PLATFORM_POSIX 1
+#elif defined(__NDS__)
+#  define PHYSFS_PLATFORM_NDS 1
 #elif defined(unix) || defined(__unix__)
 #  define PHYSFS_PLATFORM_UNIX 1
 #  define PHYSFS_PLATFORM_POSIX 1
