@@ -73,8 +73,14 @@ PHYSFS_sint64 __PHYSFS_platformRead(void *opaque, void *buf, PHYSFS_uint64 len) 
 
 PHYSFS_sint64 __PHYSFS_platformWrite(void *opaque, const void *buf, PHYSFS_uint64 len) {
 	FILE *file = opaque;
-	int written = fwrite(buf, 1, len, file);
-	BAIL_IF(written == 0 && ferror(file), fromErrno, -1);
+	PHYSFS_uint64 written = 0;
+	// SD writes on DSi will hang if writing 1 KiB or more at once, so we need this loop
+	while (written < len) {
+		int remaining = len - written;
+		int wrote = fwrite(buf+written, 1, remaining < 1023 ? remaining : 1023, file);
+		BAIL_IF(wrote == 0 && ferror(file), fromErrno, -1);
+		written += wrote;
+	}
 	return written;
 }
 
